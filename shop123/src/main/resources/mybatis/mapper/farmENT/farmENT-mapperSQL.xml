@@ -1,0 +1,421 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "//mybatis.org/DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="farmENT">
+  
+  <!-- 낙찰 상품 목록 가져오기 -->
+  	<select id="selectProductList" parameterType="hashmap" resultType="farmENTProduct">
+  		SELECT 
+	  		S.AUCTION_NO AS auctionNo,
+	  		A.AUCTION_PRODUCT AS auctionProduct,
+	  		A.AUCTION_PRICE AS auctionPrice,
+	  		A.AUCTION_END AS auctionEnd 
+  		FROM SELL_FORM S
+			LEFT JOIN AUCTION A ON (S.AUCTION_NO=A.AUCTION_NO)
+		WHERE A.FARM_NO=#{farmNo} 
+			
+				<if test="type!=null and type.equals('productName')">
+					AND A.auction_product like '%'||#{keyWord}||'%'
+				</if>
+				<if test="type!=null and type.equals('auctionNo')">
+					AND A.auction_no like '%'||#{keyWord}||'%'
+				</if>
+		ORDER BY 1 DESC
+  	
+  	</select>
+  
+  <!--낙찰 상품의 총 개수 -->
+  	<select id="selectProductTotalCount" parameterType="hashmap" resultType="int">
+  		 SELECT 
+			COUNT(*)
+  		FROM SELL_FORM S
+			LEFT JOIN AUCTION A ON (S.AUCTION_NO=A.AUCTION_NO)
+		WHERE A.FARM_NO=#{farmNo}
+					
+				<if test="type!=null and type.equals('productName')">
+					AND A.auction_product like '%'||#{keyWord}||'%'
+				</if>
+				<if test="type!=null and type.equals('auctionNo')">
+					AND A.auction_no like '%'||#{keyWord}||'%'
+				</if>
+  	</select>
+  
+  <!-- 주문 목록 리스트 -->
+  	<select id="selectOrderList" parameterType="hashmap" resultType="farmENTOrder">
+  	
+  		SELECT BUY_NO AS buyNo,
+  			   USER_NO AS userNo,
+  			   FARM_NO AS farmNo,
+  			   ORDER_NO AS orderNo,
+  			   PRODUCT_NAME AS productName,
+  			   PRODUCT_COUNT AS productCount,
+  			   PAY_AMOUNT AS payAmount,
+  			   PURCHASE_DATE AS purchaseDate,
+  			   D_NAME AS dName
+		FROM PURCHASELIST P
+			LEFT JOIN DELIVERY D ON (P.D_CODE=D.D_CODE)
+		WHERE FARM_NO=#{farmNo} AND NOT REFUND_YN ='Y'
+		
+		<if test="type!=null and type.equals('userNo')">
+			AND user_no like '%'||#{keyWord}||'%'
+		</if>
+		<if test="type!=null and type.equals('productName')">
+			AND product_name like '%'||#{keyWord}||'%'
+		</if>
+		ORDER BY 1 DESC
+  	   
+  	</select>
+  
+  <!-- 주문 목록 리스트 개수 -->	
+  	<select id="selectOrderListTotalCount" parameterType="hashmap" resultType="int"> 
+  		SELECT COUNT(*)
+			FROM PURCHASELIST
+			WHERE FARM_NO=#{farmNo} AND NOT REFUND_YN ='Y'
+  		
+  		<if test="type!=null and type.equals('userNo')">
+			AND user_no like '%'||#{keyWord}||'%'
+		</if>
+		<if test="type!=null and type.equals('productName')">
+			AND product_name like '%'||#{keyWord}||'%'
+		
+		</if>
+  	</select>	
+  	
+  	
+  <!--주문목록,환불접수 회원 정보 가져오기 -->	
+  	
+  	<select id="selectOneMember" parameterType="int" resultType="member">
+  		SELECT user_no AS userNo,
+  			   user_id AS userId,
+  			   user_Pwd AS userPwd,
+  			   user_Name AS userName,
+  			   user_Nick AS userNick,
+  			   user_Email AS userEmail,
+  			   user_Phone AS userPhone,
+  			   user_Address_Main AS userAddressMain,
+  			   user_Address_Sub AS userAddressSub,
+  			   user_EnrollDate AS userEnrollDate,
+  			   user_End_YN AS userEndYN,
+  			   rating AS rating
+  			   
+			FROM MEMBER
+		WHERE USER_NO=#{_parameter}
+  	</select>
+  	
+  	<!-- 주문목록 상품 정보 가져오기 -->
+
+	<select id="selectOneProduct" parameterType="hashmap" resultType="farmENTProduct">
+		 SELECT 
+	  		AUCTION_NO AS auctionNo,
+	  		AUCTION_PRODUCT AS auctionProduct,
+	  		AUCTION_PRICE AS auctionPrice,
+	  		AUCTION_END AS auctionEnd 
+  		FROM AUCTION 
+		WHERE FARM_NO=#{farmNo} AND AUCTION_PRODUCT=#{productName} 
+		
+	</select>
+  
+  <!-- 배송 상태 입력 -->
+  	<insert id="insertDeliveryStatus" parameterType="hashmap">
+  		INSERT INTO DELIVERY_MANAGEMENT VALUES(DELIVERY_SEQ.NEXTVAL,
+  												#{buyNo},
+  												#{deliveryCompany},
+  												#{sendNo},
+  												#{sendDate},
+  												'N',
+  												#{deliveryStatus})
+  	</insert>
+  	
+  	<!-- 구매 목록 테이블에 배송 값 변경 -->
+  	
+  	<update id="updatePurchaselist" parameterType="hashmap">
+  	
+  		UPDATE PURCHASELIST SET D_CODE=#{deliveryStatus} WHERE BUY_NO=#{buyNo}
+  	
+  	</update>
+  	
+
+  	<!-- 입력한 배송 데이터 값 가져오기 -->
+  	<select id="selectDeliveryInputData" parameterType="int" resultType="farmENTDeliveryStatus">
+  		SELECT 
+  			   Delivery_No AS deliveryNo,
+  			   buy_No AS buyNo,
+  			   delivery_Company AS deliveryCompany,
+  			   delivery_Num AS deliveryNum,
+  			   delivery_Date AS deliveryDate,
+  			   del_YN AS delYN,
+  			   delivery_Status AS deliveryStatus
+		FROM DELIVERY_MANAGEMENT
+		WHERE BUY_NO =#{_parameter}
+		ORDER BY 1 DESC
+  	</select>
+  	
+  	
+	<!-- 공지사항 리스트 가져오기-->  	
+
+	<select id="selectNoticeList" parameterType="hashmap" resultType="notice">
+		SELECT 
+				NOTICE_NO AS noticeNo,
+				NOTICE_TITLE AS noticeTitle,
+				NOTICE_CONTENT AS noticeContent,
+				NOTICE_REGDATE AS noticeRegdate,
+				FARM_NO AS farmNo,
+				NOTICE_COUNT AS noticeCount,
+				NOTICE_END_YN AS noticeEndYN,
+				NOTICE_CODE AS noticeCode,
+				NOTICE_CATEGORY AS noticeCategory
+		FROM NOTICE 
+		WHERE NOTICE_CODE IN ('A','F') AND NOTICE_END_YN='N' 
+		<if test="type!=null and type.equals('subject')">
+			AND NOTICE_TITLE like '%'||#{keyWord}||'%'
+		</if>
+		<if test="type!=null and type.equals('content')">
+			AND NOTICE_CONTENT like '%'||#{keyWord}||'%'
+		</if>
+		ORDER BY 1 DESC
+	
+	</select>
+
+	<!-- 공지사항 글 총 개수 -->
+	<select id="selectNoticeListTotalCount" parameterType="hashmap" resultType="int">
+		
+		SELECT COUNT(*)
+		FROM NOTICE 
+		WHERE NOTICE_CODE IN ('A','F') AND NOTICE_END_YN='N'
+		<if test="type!=null and type.equals('subject')">
+			AND NOTICE_TITLE like '%'||#{keyWord}||'%'
+		</if>
+		<if test="type!=null and type.equals('content')">
+			AND NOTICE_CONTENT like '%'||#{keyWord}||'%'
+		</if>
+	
+	</select>
+
+	<!-- 문의사항  -->
+	<select id="selectQnaList" parameterType="hashmap" resultType="farmENTQna">
+	
+	SELECT Q.QUESTION_USER_NO AS questionNo,
+           Q.QUESTION_USER_TITLE AS questionTitle,
+           Q.QUESTION_USER_CONTENT AS questionContent,
+           Q.QUESTION_USER_REGDATE AS questionRegdate,
+           Q.USER_NO AS userNo,
+           M.USER_NAME AS userName,
+           M.USER_ID AS userId,
+           Q.QUESTIONPHOTO_NO AS questionPhotoNo,
+           Q.FARM_NO AS farmNo
+           
+	FROM QUESTION_USER Q
+    LEFT JOIN MEMBER M ON(M.USER_NO=Q.USER_NO)
+	WHERE QUESTION_USER_CODE='Q-2' AND QUESTION_USER_CLASSIFY='F'
+            AND FARM_NO=#{farmNo} AND QUESTION_USER_END_YN='N'
+       	<if test="type!=null and type.equals('subject')">
+			AND Q.QUESTION_USER_TITLE like '%'||#{keyWord}||'%'
+		</if>
+		<if test="type!=null and type.equals('content')">
+			AND Q.QUESTION_USER_CONTENT like '%'||#{keyWord}||'%'
+		</if>    
+		<if test="type!=null and type.equals('writer')">
+			AND M.USER_NAME like '%'||#{keyWord}||'%'
+		</if>   
+            
+	ORDER BY 1 DESC
+	
+	
+	</select>
+	
+	<!-- 문의사항 총 게시물 개수 -->
+	<select id="selectQnaListTotalCount" parameterType="hashmap" resultType="int">
+		SELECT COUNT(*) 
+		FROM QUESTION_USER Q
+    	LEFT JOIN MEMBER M ON(M.USER_NO=Q.USER_NO)
+		WHERE 
+		QUESTION_USER_CODE='Q-2' AND QUESTION_USER_CLASSIFY='F' AND FARM_NO=#{farmNo} AND QUESTION_USER_END_YN='N'
+       	<if test="type!=null and type.equals('subject')">
+			AND Q.QUESTION_USER_TITLE like '%'||#{keyWord}||'%'
+		</if>
+		<if test="type!=null and type.equals('content')">
+			AND Q.QUESTION_USER_CONTENT like '%'||#{keyWord}||'%'
+		</if>    
+		<if test="type!=null and type.equals('writer')">
+			AND M.USER_NAME like '%'||#{keyWord}||'%'
+		</if>   
+	
+	</select>
+	
+	<!-- 환불 게시물 리스트 -->
+	<select id="selectRefundList" parameterType="hashmap" resultType="farmENTRefund">
+		SELECT 
+	        R.REFUND_NO AS refundNo,
+	        R.BUY_NO AS buyNo,
+	        R.USER_NO AS userNo,
+	        R.FARM_NO AS farmNo,
+	        R.FARM_YN AS farmYN,
+	        Q.QUESTION_USER_NO AS questionUserNo,
+	        Q.QUESTION_USER_TITLE AS questionUserTitle,
+	        Q.QUESTION_USER_CONTENT AS questionUserContent,
+	        Q.QUESTION_USER_REGDATE AS questionUserRegdate,
+	        Q.ORDER_NO AS orderNo
+		FROM REFUND R
+		LEFT JOIN QUESTION_USER Q ON(R.QUESTION_USER_NO=Q.QUESTION_USER_NO)
+		WHERE R.FARM_NO=#{farmNo} AND Q.QUESTION_USER_END_YN='N' AND R.DEL_YN='N'
+		<if test="type!=null and type.equals('orderNo')">
+			AND Q.ORDER_NO like '%'||#{keyWord}||'%'
+		</if>    
+		<if test="type!=null and type.equals('userNo')">
+			AND R.USER_NO like '%'||#{keyWord}||'%'
+		</if>
+		ORDER BY 1 DESC  
+	
+	</select>
+	
+	<!-- 환불 게시물 총 개수 -->
+	
+	<select id="selectRefundListTotalCount" parameterType="hashmap" resultType="int">
+		SELECT COUNT(*)
+		FROM REFUND R
+		LEFT JOIN QUESTION_USER Q ON(R.QUESTION_USER_NO=Q.QUESTION_USER_NO)
+		WHERE R.FARM_NO=#{farmNo} AND Q.QUESTION_USER_END_YN='N' AND R.DEL_YN='N'
+		<if test="type!=null and type.equals('orderNo')">
+			AND Q.ORDER_NO like '%'||#{keyWord}||'%'
+		</if>    
+		<if test="type!=null and type.equals('userNo')">
+			AND R.USER_NO like '%'||#{keyWord}||'%'
+		</if>   
+		
+	</select>
+	
+	<!--주문상세정보 (환불게시판)-->
+	
+	<select id="selectOrdertDetailInfo" parameterType="String" resultType="farmENTOrder">
+  		SELECT BUY_NO AS buyNo,
+  			   USER_NO AS userNo,
+  			   FARM_NO AS farmNo,
+  			   ORDER_NO AS orderNo,
+  			   PRODUCT_NAME AS productName,
+  			   PRODUCT_COUNT AS productCount,
+  			   PAY_AMOUNT AS payAmount,
+  			   PURCHASE_DATE AS purchaseDate,
+  			   D_CODE AS dName
+		FROM PURCHASELIST
+		WHERE ORDER_NO = #{_parameter}
+	</select>
+	
+	
+	<!-- 사업자 환불 승인 -->
+	<update id="updateRefund" parameterType="hashmap">
+		
+		UPDATE REFUND 
+		SET 
+		<if test='refundYN!=null and refundYN.equals("Y")'>
+			FARM_YN='Y'
+		</if>    
+		<if test='refundYN!=null and refundYN.equals("N")'>
+			FARM_YN='N'
+		</if> 
+		WHERE BUY_NO=#{buyNo}
+	
+	</update>
+	
+	
+	<!-- 대시보드 공지사항 -->
+	<select id="selectNoticeDashBoard" resultType="notice">
+		SELECT 
+				NOTICE_NO AS noticeNo,
+				NOTICE_TITLE AS noticeTitle,
+				NOTICE_CONTENT AS noticeContent,
+				NOTICE_REGDATE AS noticeRegdate,
+				FARM_NO AS farmNo,
+				NOTICE_COUNT AS noticeCount,
+				NOTICE_END_YN AS noticeEndYN,
+				NOTICE_CODE AS noticeCode,
+				NOTICE_CATEGORY AS noticeCategory
+		FROM NOTICE 
+		WHERE NOTICE_CODE IN ('A','F') AND NOTICE_END_YN='N' 
+		ORDER BY 1 DESC
+
+	</select>
+	
+	<!-- 대시보드 문의사항 -->
+	<select id="selectQnaDashBoard" parameterType="int" resultType="farmENTQna">
+		SELECT
+			   Q.QUESTION_USER_NO AS questionNo,
+	           Q.QUESTION_USER_TITLE AS questionTitle,
+	           Q.QUESTION_USER_CONTENT AS questionContent,
+	           Q.QUESTION_USER_REGDATE AS questionRegdate,
+	           Q.USER_NO AS userNo,
+	           M.USER_NAME AS userName,
+	           M.USER_ID AS userId,
+	           Q.QUESTIONPHOTO_NO AS questionPhotoNo,
+	           Q.FARM_NO AS farmNo
+		FROM QUESTION_USER Q
+	    LEFT JOIN MEMBER M ON(M.USER_NO=Q.USER_NO)
+		WHERE QUESTION_USER_CODE='Q-2' AND QUESTION_USER_CLASSIFY='F'
+	            AND FARM_NO=#{_parameter} AND QUESTION_USER_END_YN='N'
+		ORDER BY 1 DESC
+	
+	</select>
+	
+	<!-- 대시보드 환불접수 -->
+	<select id="selectRefundBoard" parameterType="int" resultType="farmENTRefund">
+		SELECT 
+	        R.REFUND_NO AS refundNo,
+	        R.BUY_NO AS buyNo,
+	        R.USER_NO AS userNo,
+	        R.FARM_NO AS farmNo,
+	        R.FARM_YN AS farmYN,
+	        Q.QUESTION_USER_NO AS questionUserNo,
+	        Q.QUESTION_USER_TITLE AS questionUserTitle,
+	        Q.QUESTION_USER_CONTENT AS questionUserContent,
+	        Q.QUESTION_USER_REGDATE AS questionUserRegdate,
+	        Q.ORDER_NO AS orderNo
+		FROM REFUND R
+		LEFT JOIN QUESTION_USER Q ON(R.QUESTION_USER_NO=Q.QUESTION_USER_NO)
+		WHERE R.FARM_NO=#{_paremeter} AND Q.QUESTION_USER_END_YN='N' AND R.DEL_YN='N'
+		ORDER BY 1 DESC
+	
+	</select>
+
+	<!-- 대시보드 매출 (5개의 상품 ) -->
+	<select id="selectFiveProduct" parameterType="int" resultType="farmENTBidProduct">
+		SELECT 
+		    B.BID_NO AS bidNo,
+		    B.AUCTION_NO AS auctionNo,
+		    B.BID_DATE AS bidDate,
+		    A.FARM_NO AS farmNo,
+		    A.AUCTION_PRODUCT AS auctionProduct
+		from BID B
+		LEFT JOIN AUCTION A on (B.AUCTION_NO = A.AUCTION_NO)
+		WHERE FARM_NO=#{_parameter}
+		ORDER BY BID_DATE DESC
+	
+	</select>
+
+  	<!-- 대시보드 매출 (5개 상품에 대한 판매량) -->
+  	<select id="selectFiveProductCount" parameterType="hashmap" resultType="farmENTBidProductCount">
+  		SELECT 
+  			PRODUCT_NAME AS productName,
+  			SUM(PRODUCT_COUNT) AS prodictCount
+		FROM PURCHASELIST 
+		WHERE FARM_NO=#{farmNo} 
+		<if test='size==1'>
+		AND PRODUCT_NAME IN (#{product1})
+		</if> 
+		<if test='size==2'>
+		AND PRODUCT_NAME IN (#{product1},#{product2})
+		</if> 
+		<if test='size==3'>
+		AND PRODUCT_NAME IN (#{product1},#{product2},#{product3})
+		</if>
+		<if test='size==4'>
+		AND PRODUCT_NAME IN (#{product1},#{product2},#{product3},#{product4})
+		</if>
+		<if test='size==5'>
+		AND PRODUCT_NAME IN (#{product1},#{product2},#{product3},#{product4},#{product5})
+		</if>   
+		
+	   GROUP BY PRODUCT_NAME
+  	
+  	</select>
+  	
+  	
+  	
+</mapper>

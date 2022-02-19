@@ -1,0 +1,280 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "//mybatis.org/DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+	<mapper namespace="qUser">
+		
+		<!-- 사용자 문의 1:1리스트 -->
+		<select id="selectUserQuestionList" parameterType="qUser" resultType="qUser">
+			select
+				QUESTION_USER_NO as QuestionUserNo,
+				QUESTION_USER_TITLE as QuestionUserTitle,
+				QUESTION_USER_CONTENT as QuestionUserContent,
+				QUESTION_USER_REGDATE as QuestionUserRegdate,
+				USER_NO as UserNo,
+				QUESTION_USER_END_YN as QuestionUserEndYN,
+				QUESTIONPHOTO_NO as QuestionPhotoNo,
+				QUESTION_USER_CODE as QuestionUserCode,
+				QUESTION_USER_CLASSIFY as QuestionUserClassify,
+				FARM_NO as FarmNo,
+				ORDER_NO as OrderNo,
+				QUESTION_USER_ANSWER_YN as QuestionUserAnswer
+			from (select row_number() over(order by Question_user_no desc)as num, question_user.* ,user_nick
+				from question_user 
+				left join member on (question_user.user_no=member.user_no) 
+				where QUESTION_USER_END_YN='N')
+		</select>		
+		
+		<!-- 1:1문의 사용자 글 쓰기 -->
+		<insert id="insertUserWrite" parameterType="qUser">
+			<selectKey keyProperty="questionUserNo" resultType="integer" order="AFTER">
+				select max(question_user_no) as questionUserNo from question_user
+			</selectKey>
+			INSERT INTO             QUESTION_USER
+			VALUES                  (QUESTION_USER_Seq.nextval,
+			                        #{questionUserTitle},
+			                        #{questionUserContent},
+			                        sysdate,
+			                        #{userNo},
+			                        'N',
+			                        #{questionphotoNo},
+			                        #{questionUserCode},
+			                        #{questionUserClassify},
+			                        #{farmNo},
+			                        #{orderNo},
+			                        'N')
+		</insert>
+		
+		<!-- 1:1문의 사용자 파일 업로드 선행 -->
+		<insert id="insertWriteFile" parameterType="qPhoto">
+			<selectKey keyProperty="questionPhotoNo" resultType="integer" order="AFTER">
+                SELECT QUESTIONPHOTO_NO FROM QuestionPhoto WHERE QUESTIONPHOTO_UPDATETIME=#{questionPhotoUpdateTime}
+            </selectKey>
+				insert into 	QuestionPhoto
+				values			(QUESTIONPHOTO_SEQ.nextval,
+								#{questionPhotoOriginal},
+								#{questionPhotoChange},
+								#{questionPhotoFilePath},
+								#{questionPhotoFileSize},
+								#{questionPhotoUpdateTime},
+								'N',
+								'N')
+		</insert>
+		
+		<update id="updateQPhote" parameterType="integer">
+			update QuestionPhoto set questionPhoto_Use_YN='Y' where QUESTIONPHOTO_NO=#{_parameter}
+		</update>
+		
+		<!-- 1:1문의 사용자 뷰(조회) -->
+		<select id="questionView" parameterType="integer" resultType="qUser">
+		select
+				QUESTION_USER_NO as QuestionUserNo,
+				QUESTION_USER_TITLE as QuestionUserTitle,
+				QUESTION_USER_CONTENT as QuestionUserContent,
+				QUESTION_USER_REGDATE as QuestionUserRegdate,
+				QUESTION_USER.USER_NO as UserNo,
+				member.user_nick as userNick,
+				QUESTION_USER_END_YN as QuestionUserEndYN,
+				QUESTION_USER.QUESTIONPHOTO_NO as QuestionPhotoNo,
+				QUESTION_USER_CODE as QuestionUserCode,
+				QUESTION_USER_CLASSIFY as QuestionUserClassify,
+				FARM_NO as FarmNo,
+				ORDER_NO as OrderNo,
+				QUESTION_USER_ANSWER_YN as QuestionUserAnswerYN,
+				QUESTIONPHOTO.QUESTIONPHOTO_FILEPATH as questionPhotoFilePath
+			from QUESTION_USER left join QUESTIONPHOTO on (QUESTION_USER.QUESTIONPHOTO_NO = QUESTIONPHOTO.QUESTIONPHOTO_NO)
+			left join member on (QUESTION_USER.user_no = member.user_no)
+			where QUESTION_USER_NO = #{_parameter}
+		</select>
+		<select id="questionViewRefund" parameterType="integer" resultType="refund">
+			select
+				refund_No as refundNo,
+				buy_No as buyNo,
+				user_No as userNo,
+				farm_No as farmNo,
+				farm_YN as farmYN,
+				admin_YN as adminYN,
+				del_YN as delYN,
+				question_User_No as questionUserNo
+			from refund where question_user_no=#{_parameter}
+		</select>
+		
+		<!-- 글 수정단 -->
+		<update id="questionUpdate" parameterType="qUser">
+			update		QUESTION_USER
+			set			QUESTION_USER_TITLE=#{QuestionUserTitle},
+						QUESTION_USER_CONTENT=#{QuestionUserContent},
+						QUESTIONPHOTO_NO=#{QuestionPhotoNo},
+						QUESTION_USER_CODE=#{QuestionUserCode},
+						QUESTION_USER_CLASSIFY=#{QuestionUserClassify}
+			where 		QUESTION_USER_NO=#{QuestionUserNo}
+		</update>
+
+		<!-- 이미지 수정 -->
+		<update id="questionPhotoUpdate" parameterType="qUser">
+			<selectKey keyProperty="questionPhotoNo" resultType="integer" order="AFTER">
+                SELECT QUESTIONPHOTO_NO FROM QuestionPhoto WHERE QUESTIONPHOTO_UPDATETIME=#{questionPhotoUpdateTime}
+            </selectKey>
+            update		QuestionPhoto
+            set			QUESTIONPHOTO_ORIGINAL=#{questionPhotoOriginal},
+            			QUESTIONPHOTO_CHANGE=#{questionPhotoChange},
+            			QUESTIONPHOTO_FILEPATH=#{questionPhotoFilePath},
+            			QUESTIONPHOTO_FILESIZE=#{questionPhotoFileSize},
+            			QUESTIONPHOTO_UPDATETIME=#{questionPhotoUpdateTime}
+            where		QUESTIONPHOTO_NO=#{QuestionPhotoNo}
+		</update>
+		<!-- 글 수정단 완료 -->
+		<!-- 유저 구매 목록 가져오기 -->
+		<select id="buyCheckList" parameterType="hashmap" resultType="pur">
+			select
+				buy_no as buyNo,
+				user_no as userNo,
+				farm_no as farmNo,
+				product_name as productName,
+				product_count as productCount,
+				pay_amount as payAmount,
+				purchase_date as purchaseDate,
+			 	order_no as orderNo
+			 from (select row_number() over (order by buy_no desc) as num, purchaselist.* from purchaselist 
+			 where user_No=#{userNo} and refund_yn='N')
+			 where num between #{start} and #{end}
+		</select>
+		<select id="buyListTotalCount" parameterType="integer" resultType="integer">
+			select count(*) from purchaselist where user_no=#{_parameter} and refund_yn='N'
+		</select>
+		<select id="selectPurchaselist" parameterType="qUser" resultType="pur">
+			select
+				buy_no as buyNo,
+				user_no as userNo,
+				farm_no as farmNo,
+				product_name as productName,
+				product_count as productCount,
+				pay_amount as payAmount,
+				purchase_date as purchaseDate,
+			 	order_no as orderNo
+			 from purchaselist 
+			 where order_no=#{orderNo}
+		</select>
+		<insert id="refund" parameterType="hashmap">
+			insert into refund values(refund_seq.nextval,#{pur.buyNo},#{pur.userNo},#{pur.farmNo},'X','X','N',#{qUser.questionUserNo})
+		</insert>
+<!-- 유저 문의사항 리스트 불러오기 -->
+		<select id="questionUserList" parameterType="hashmap" resultType="qUser">
+			select
+				QUESTION_USER_NO as QuestionUserNo,
+				QUESTION_USER_TITLE as QuestionUserTitle,
+				QUESTION_USER_CONTENT as QuestionUserContent,
+				QUESTION_USER_REGDATE as QuestionUserRegdate,
+				USER_NO as UserNo,
+				user_nick as userNick,
+				QUESTION_USER_END_YN as QuestionUserEndYN,
+				QUESTIONPHOTO_NO as QuestionPhotoNo,
+				QUESTION_USER_CODE as QuestionUserCode,
+				QUESTION_USER_CLASSIFY as QuestionUserClassify,
+				FARM_NO as FarmNo,
+				ORDER_NO as OrderNo,
+				QUESTION_USER_ANSWER_YN as QuestionUserAnswer
+			from (select row_number() over(order by Question_user_no desc)as num, question_user.* ,user_nick
+				from question_user 
+				left join member on (question_user.user_no=member.user_no) 
+				where QUESTION_USER_END_YN='N' and 
+				<choose>
+					<when test="member!=null">
+						question_user.user_no=#{member.userNo} 
+					</when>
+					<otherwise>
+						question_user.farm_no=#{farm.farmNo} 
+					</otherwise>
+				</choose> 
+				<choose>
+					<when test="type.equals('title')">
+						and QUESTION_USER_TITLE like '%'||#{keyword}||'%'
+					</when>
+					<when test="type.equals('content')">
+						and QUESTION_USER_content like '%'||#{keyword}||'%'
+					</when>
+					<when test="type.equals('all')">
+						and (QUESTION_USER_TITLE like '%'||#{keyword}||'%' or QUESTION_USER_content like '%'||#{keyword}||'%')
+					</when>
+					<otherwise></otherwise>
+				</choose>
+				)
+				where num between #{start} and #{end}
+		</select>
+		<select id="qUserTotalCount" parameterType="hashmap" resultType="integer">
+			select count(*) from question_user where 
+			<choose>
+					<when test="member!=null">
+						question_user.user_no=#{member.userNo} 
+					</when>
+					<otherwise>
+						question_user.farm_no=#{farm.farmNo} 
+					</otherwise>
+				</choose> 
+			<choose>
+				<when test="type.equals('title')">
+					and QUESTION_USER_TITLE like '%'||#{keyword}||'%'
+				</when>
+				<when test="type.equals('content')">
+					and QUESTION_USER_content like '%'||#{keyword}||'%'
+				</when>
+				<when test="type.equals('all')">
+					and (QUESTION_USER_TITLE like '%'||#{keyword}||'%' or QUESTION_USER_content like '%'||#{keyword}||'%')
+				</when>
+				<otherwise></otherwise>
+			</choose>
+		</select>
+<!-- 유저 문의사항 삭제 -->
+		<update id="questionUserDelete" parameterType="integer">
+			update question_user set question_user_end_yn='Y' where question_user_no=#{_parameter}
+		</update>
+		<update id="refundDelete" parameterType="integer">
+			update refund set del_yn='Y' where question_user_no=#{_parameter}
+		</update>
+<!-- 답변 등록 -->
+		<insert id="questionAnswer" parameterType="qAnswer">
+			insert into question_answer values(question_answer_seq.nextval,#{questionAnswerContent},sysdate,#{questionBoardNo},#{questionBoardCode},'N')
+		</insert>
+		<update id="questionAnswerYN" parameterType="qAnswer">
+			<choose>
+				<when test="questionBoardCode=='U'">
+					update question_user set question_user_answer_yn='Y' where question_user_no=#{questionBoardNo}
+				</when>
+				<otherwise>
+					update question_farm set question_farm_answer_yn='Y' where question_farm_no=#{questionBoardNo}
+				</otherwise>
+			</choose>
+		</update>
+		<update id="questionAnswerUpdate" parameterType="qAnswer">
+			update question_answer set question_answer_content = #{questionAnswerContent} where question_board_code=#{questionBoardCode} and question_board_no=#{questionBoardNo}
+		</update>
+		<select id="questionAnswerCheck" parameterType="integer" resultType="qAnswer">
+			select 
+				question_Answer_Content as questionAnswerContent 
+			from question_answer 
+			where question_board_code='U' and question_board_no=#{_parameter}
+		</select>
+<!-- 문의 수정 파일 변경시 삭제해야 할 파일 찾아오는 로직 -->
+		<select id="deleteFileCheck" parameterType="integer" resultType="qPhoto">
+			select 
+				questionPhoto_FilePath as questionPhotoFilePath
+			from questionphoto
+			where questionPhoto_no = #{_parameter}
+		</select>
+		<update id="deleteFileUpdate" parameterType="integer">
+			update questionphoto set questionphoto_del_yn='Y' where questionphoto_no = #{_parameter}
+		</update>
+<!-- 최종적으로 1:1유저문의 수정 로직 -->
+		<update id="questionUserUpdate" parameterType="qUser">
+			update question_user set 
+				question_User_Title=#{questionUserTitle},
+				question_User_Content=#{questionUserContent},
+				questionphoto_No=#{questionphotoNo}
+			where question_user_no=#{questionUserNo}
+		</update>
+		<select id="farmCheck" parameterType="string" resultType="farm">
+			select 
+				farm_No as farmNo,
+				farm_Name as farmName
+			from farm
+			where farm_Name like '%'||#{_parameter}||'%'
+		</select>
+	</mapper>

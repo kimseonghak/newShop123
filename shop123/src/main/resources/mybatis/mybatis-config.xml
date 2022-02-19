@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE configuration PUBLIC "//mybatis.org//DTD Config 3.0//EN" "http://mybatis.org/dtd/mybatis-3-config.dtd" >
+<configuration>
+	<!-- 별칭 등록 -->
+	<typeAliases>
+		<typeAlias type="com.hot.shop.admin.model.vo.Auction" alias="auction"/>
+		<typeAlias type="com.hot.shop.admin.model.vo.BID" alias="bid"/>
+		<typeAlias type="com.hot.shop.admin.model.vo.SellForm" alias="sellForm"/>
+		<typeAlias type="com.hot.shop.member.model.vo.Member" alias="member"/>
+		<typeAlias type="com.hot.shop.farm.model.vo.Farm" alias="farm"/>
+		<typeAlias type="com.hot.shop.admin.model.vo.Count" alias="count"/>
+		<typeAlias type="com.hot.shop.question.model.vo.QuestionUser" alias="qUser"/>
+		<typeAlias type="com.hot.shop.question.model.vo.QuestionFarm" alias="qFarm"/>
+		<typeAlias type="com.hot.shop.notice.model.vo.Notice" alias="notice"/>	
+		<typeAlias type="com.hot.shop.question.model.vo.QuestionPhoto" alias="qPhoto"/>
+		<typeAlias type="com.hot.shop.productintro.model.vo.LocalProductBoard" alias="lpBoard"/>
+		<typeAlias type="com.hot.shop.productintro.model.vo.LocalProductFile" alias="lpFile"/>
+		<typeAlias type="com.hot.shop.productintro.model.vo.SeasonProductBoard" alias="spBoard"/>
+		<typeAlias type="com.hot.shop.productintro.model.vo.SeasonProductFile" alias="spPhoto"/>
+		<typeAlias type="com.hot.shop.promotion.model.vo.Promotion" alias="promotion"/>
+		<typeAlias type="com.hot.shop.promotion.model.vo.PromotionPhoto" alias="pPhoto"/>
+		<typeAlias type="com.hot.shop.faq.model.vo.FAQ" alias="faq"/>
+		<typeAlias type="com.hot.shop.auction.model.vo.Purchaselist" alias="pur"/>
+		<typeAlias type="com.hot.shop.admin.model.vo.Refund" alias="refund"/>
+		<typeAlias type="com.hot.shop.question.model.vo.QuestionAnswer" alias="qAnswer"/>
+		
+		<!-- farmENT -->
+		<typeAlias type="com.hot.shop.farmENT.model.vo.FarmENTProduct" alias="farmENTProduct"/>
+		<typeAlias type="com.hot.shop.farmENT.model.vo.FarmENTOrder" alias="farmENTOrder"/>
+		<typeAlias type="com.hot.shop.farmENT.model.vo.FarmENTDeliveryStatus" alias="farmENTDeliveryStatus"/>
+		<typeAlias type="com.hot.shop.farmENT.model.vo.FarmENTQna" alias="farmENTQna"/>
+		<typeAlias type="com.hot.shop.farmENT.model.vo.FarmENTRefund" alias="farmENTRefund"/>
+		<typeAlias type="com.hot.shop.farmENT.model.vo.FarmENTBidProduct" alias="farmENTBidProduct"/>
+		<typeAlias type="com.hot.shop.farmENT.model.vo.FarmENTBidProductCount" alias="farmENTBidProductCount"/>
+		
+	</typeAliases>
+</configuration>

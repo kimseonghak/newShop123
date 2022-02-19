@@ -1,0 +1,166 @@
+@charset "UTF-8";
+    *
+    {
+        box-sizing: border-box;
+        font-family: Nanum Gothic;
+    }
+    
+    #contnentTitle
+    {
+        line-height:120px;
+        font-size: 2vmin;
+        font-weight:bolder;
+        position: relative;
+        left:4vw;
+    }
+    
+    
+    /*content2 영역 안*/
+    #serchArea
+    {
+        width: 90%;
+        height: 8vh;
+        margin: 0 auto;
+    }   
+    
+    #emptyArea
+    {
+        width: 90%;
+        height: 3vh;
+    }
+    #contentArea
+    {
+        width: 90%;
+        height: 57vh;
+        margin: 0 auto;
+    }
+    
+    
+    /*검색바*/
+    #keyWordSerch
+    {
+        height: 30px;
+        background-color: white;
+        color: #0C883F;
+        border-color: #0C883F;
+        border-bottom-color: #0C883F;    
+    }
+    #serchArea *
+    {
+       position: relative;
+        bottom:-12px;
+    }
+    #serchSelect
+    {
+        position: relative;
+        bottom:-13px;
+        font-size: 2.1vmin;
+    }
+    #serchKeyword
+    {
+        position: relative;
+        bottom:-13px;
+    }
+    .btn-sm
+    {
+      font-size: 1.8vmin;
+    } 
+    
+    /*Table */
+    
+    table
+    {   
+        width: 100%;
+        font-size: 1.8vmin;
+        text-align: center;
+        border-top: 2px solid #5D9A71;
+        border-bottom: 2px solid #5D9A71;
+        border-spacing: 0px;
+        margin-top: 5px;
+        line-height: 25px;
+       
+        
+    }
+    
+    tbody>tr:first-child>td
+    {
+        border-top: 1px solid #858585;
+    }
+    tbody>tr>td
+    {
+        border-top:1px solid #DFDFDF;
+    }
+    
+    .cancelBtn
+    {
+      position: relative;
+      left: 20px;  
+    }
+    .acceptBtn
+    {
+        position: relative;
+        left: 100px;
+    }
+
+    /* <th>,<td> 간격 조절 및 hover 효과 적용*/
+    .refundStatus
+    {
+        position: relative;
+        left: 140px;
+    }
+    
+    .acceptDate
+    {
+        position: relative;
+        left: 160px;
+    }
+    
+    .orderNo
+    {
+        position: relative;
+        left: 120px;
+    }
+    
+    .orderNoA
+    {
+   		cursor: pointer;
+    }
+    .orderNoA:hover
+    {
+       font-weight: bolder;
+       color: #21C967;      
+    }
+    
+    
+    .userNo
+    {
+        position: relative;
+        left: 80px;
+    }
+    
+    .userNoA
+    {
+        cursor: pointer;
+    }
+    .userNoA:hover
+    {
+       font-weight: bolder;
+       color: #21C967;      
+    }
+    
+    .boardNo
+    {
+        position: relative;
+        left: 40px;       
+    }
+    
+    
+    .boardNoA 
+    {
+		cursor: pointer;        
+    }
+    .boardNoA:hover
+    {
+       font-weight: bolder;
+       color: #21C967;
+    }

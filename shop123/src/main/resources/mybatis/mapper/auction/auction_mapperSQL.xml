@@ -1,0 +1,192 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "//mybatis.org/DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+  <mapper namespace="auction">
+  
+  <select id="selectAuction" parameterType="integer" resultType="auction">
+  	select 
+  		 auction_no as auctionNo,
+			auction_start as auctionStart,
+			auction_end as auctionEnd,
+			auction_product as auctionProduct,
+			auction_Price as auctionPrice,
+			auction_Count1 as auctionCount1,
+			farm_No as farmNo,
+			auction_Form_No as auctionFormNo,
+			farm_No2 as farmNo2,
+			farm_No3 as farmNo3,
+			auction_Count2 as auctionCount2,
+			auction_Count3 as auctionCount3,
+			auction_EndYN as auctionEndYN
+  	from (select row_number() over (order by auction_no desc) as num, auction.* from auction 
+	where auction_form_no=#{_parameter} and to_date(auction_end)>=to_date(sysdate) and auction_endyn='N')
+	where num=1 
+	
+  </select>
+  
+  <insert id="inputLowestPrice" parameterType="hashmap">
+  	insert into auction values(auction_SEQ.nextval,
+	  						   #{auc.auctionStart},
+  							   #{auc.auctionEnd},
+  							   #{auc.auctionProduct},
+  							   #{auc.auctionPrice},
+  							   #{auc.auctionCount1},
+  							   #{farmNo},
+  							   #{auc.auctionFormNo},
+  							   1,
+  							   1,
+  							   0,
+  							   0,
+  							   default)
+  </insert>
+   <select id="selectAuctionSale" parameterType="integer" resultType="sellForm">
+	select 
+		SELL_NO as sellNo,
+  		SELL_START as sellStart,
+  		SELL_END as sellEnd,
+  		AUCTION_NO as auctionNo,
+  		SELL_FORM_NO as sellFormNo,
+  		BOARD_NO as boardNo,
+  		SELL_END_YN as sellEndYN,
+  		auction_product as auctionProduct,
+		auction_Price as auctionPrice,
+		auction_Count1 as auctionCount1,
+		farm_No as farmNo
+	from (select row_number() over (order by sell_no desc) as num, 
+	sell_form.*,auction_product,auction_price,auction_count1,farm_no from sell_form
+	left join auction on(sell_form.auction_no=auction.auction_no)
+	where sell_form_no=#{_parameter} and to_date(sell_end)>=to_date(sysdate) and sell_end_yn='N')
+	where num=1
+	
+  </select>
+ 
+  <select id="selectFarmName" resultType="farm">
+  	select 
+  		farm_no as farmNo,
+		farm_name as farmName
+  	from farm 	
+	where farm_no=#{farmNo} and farm_end_yn='N'
+  </select>  
+
+  <insert id="insertOrder" parameterType="pur">
+  	insert into purchaselist values
+  	(buy_no_SEQ.nextval,#{userNo},#{farmNo},#{productName},#{productCount},#{payAmount},sysdate,#{phone},#{address1},#{address2},default,#{payMethod},default,#{orderNo},#{recipient})
+  </insert>
+  
+  <update id="minusAuctionCount1" parameterType="hashmap">
+  	update auction set auction_count1= auction_count1-#{auctionCount} where auction_no=#{auctionNo}
+  </update>
+  
+  <select id="orderListInfo" parameterType="hashmap" resultType="pur">
+  	select 
+		BUY_NO as buyNo,
+		USER_NO as userNo,
+		FARM_NO as farmNo,
+		PRODUCT_NAME as productName,
+		PRODUCT_COUNT as productCount,
+		PAY_AMOUNT as payAmount,
+		PURCHASE_DATE as purchaseDate,
+		PHONE as phone,
+		ADDRESS1 as address1,
+		ADDRESS2 as address2,
+		D_CODE as dCode,
+		PAY_METHOD as payMethod,
+		REFUND_YN as refundYN,
+		ORDER_NO as orderNo,
+		farm_name as farmName,
+		DELIVERY_COMPANY as deliveryCompany,
+		DELIVERY_NUM as deliveryNo,
+		d_name as dName
+	from (select row_number() over (order by purchaselist.buy_no desc) as num, 
+	purchaselist.*, farm.farm_name,DELIVERY_COMPANY,DELIVERY_NUM,d_name from purchaselist
+	left join farm on(farm.farm_no=purchaselist.farm_no)
+	left join delivery_management on(delivery_management.buy_no=purchaselist.buy_no)
+	left join delivery on(purchaselist.d_code=delivery.d_code)
+	where user_no=#{userNo}
+	<choose>
+			<when test="type.equals('2022')">
+				and to_date('2022/01/01') &lt;= to_date(PURCHASE_DATE)
+				and to_date(PURCHASE_DATE) &lt;= to_date('2022/12/31')
+			</when>
+			<when test="type.equals('2021')">
+				and to_date('21/01/01') &lt;= to_date(PURCHASE_DATE)
+				and to_date(PURCHASE_DATE) &lt;= to_date('21/12/31')
+			</when>
+			<when test="type.equals('2020')">
+				and to_date('20/01/01') &lt;= to_date(PURCHASE_DATE)
+				and to_date(PURCHASE_DATE) &lt;= to_date('20/12/31')
+			</when>
+			<when test="type.equals('2019')">
+				and to_date('19/01/01') &lt;= to_date(PURCHASE_DATE)
+				and to_date(PURCHASE_DATE) &lt;= to_date('19/12/31')
+			</when>
+			<when test="type.equals('2018')">
+				and to_date('18/01/01') &lt;= to_date(PURCHASE_DATE)
+				and to_date(PURCHASE_DATE) &lt;= to_date('18/12/31')
+			</when>
+			<otherwise></otherwise>
+	</choose>
+	
+	)
+	where num between #{start} and #{end}
+  </select>
+  
+  <select id="orderListTotalCount" parameterType="hashmap" resultType="int">
+  	select count(*) from purchaselist where user_No=#{userNo}
+  	<choose>
+			<when test="type.equals('2022')">
+				and to_date('2022/01/01') &lt;= to_date(PURCHASE_DATE)
+				and to_date(PURCHASE_DATE) &lt;= to_date('2022/12/31')
+			</when>
+			<when test="type.equals('2021')">
+				and to_date('21/01/01') &lt;= to_date(PURCHASE_DATE)
+				and to_date(PURCHASE_DATE) &lt;= to_date('21/12/31')
+			</when>
+			<when test="type.equals('2020')">
+				and to_date('20/01/01') &lt;= to_date(PURCHASE_DATE)
+				and to_date(PURCHASE_DATE) &lt;= to_date('20/12/31')
+			</when>
+			<when test="type.equals('2019')">
+				and to_date('19/01/01') &lt;= to_date(PURCHASE_DATE)
+				and to_date(PURCHASE_DATE) &lt;= to_date('19/12/31')
+			</when>
+			<when test="type.equals('2018')">
+				and to_date('18/01/01') &lt;= to_date(PURCHASE_DATE)
+				and to_date(PURCHASE_DATE) &lt;= to_date('18/12/31')
+			</when>
+			<otherwise></otherwise>
+	</choose>
+  	
+  </select>
+  
+  <select id="selectOrderDetail" parameterType="string" resultType="pur">
+ 	select 
+		BUY_NO as buyNo,
+		USER_NO as userNo,
+		FARM_NO as farmNo,
+		PRODUCT_NAME as productName,
+		PRODUCT_COUNT as productCount,
+		PAY_AMOUNT as payAmount,
+		PURCHASE_DATE as purchaseDate,
+		PHONE as phone,
+		ADDRESS1 as address1,
+		ADDRESS2 as address2,
+		D_CODE as dCode,
+		PAY_METHOD as payMethod,
+		REFUND_YN as refundYN,
+		ORDER_NO as orderNo,
+		farm_name as farmName,
+		DELIVERY_COMPANY as deliveryCompany,
+		DELIVERY_NUM as deliveryNo,
+		d_name as dName,
+		recipient as recipient
+	from (select 
+	purchaselist.*, farm.farm_name,DELIVERY_COMPANY,DELIVERY_NUM,d_name from purchaselist
+	left join farm on(farm.farm_no=purchaselist.farm_no)
+	left join delivery_management on(delivery_management.buy_no=purchaselist.buy_no)
+	left join delivery on(purchaselist.d_code=delivery.d_code))
+	where order_no=#{_parameter}
+ </select>
+
+  
+  
+</mapper>
