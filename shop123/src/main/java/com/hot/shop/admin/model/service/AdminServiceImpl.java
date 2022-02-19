@@ -105,18 +105,9 @@ public class AdminServiceImpl implements AdminService{
 	}
 
 	@Override
-	public HashMap<String, Object> BIDInfo(int currentPage,int formNo) {
-		
-		int recordCountPerPage=10;
-		ArrayList<BID> list = aDAO.BIDList(recordCountPerPage,currentPage); 
-		int naviCountPerPage=10;
-		String pageNavi = aDAO.getPageNavi(recordCountPerPage,currentPage,naviCountPerPage,formNo);
-		
-		HashMap<String, Object> map = new HashMap<String, Object>();
-		map.put("list", list);
-		map.put("pageNavi", pageNavi);
-		
-		return map;
+	public void BIDInfo(HashMap<String, Object>map) {
+		aDAO.BIDList(map);
+		aDAO.getPageNavi(map);
 	}
 
 // 멤버 관리 관련 기능

@@ -20,7 +20,7 @@ public interface AdminService {
 	
 	void BIDScheduler();
 
-	HashMap<String, Object> BIDInfo(int currentPage,int formNo);
+	void BIDInfo(HashMap<String, Object>map);
 
 	Auction outputAucionInfo(int auctionNo);
 

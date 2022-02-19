@@ -5,12 +5,10 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.regex.Pattern;
 
-import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.aspectj.lang.annotation.Before;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
@@ -21,6 +19,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.SessionAttribute;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.hot.shop.admin.common.BoardPaging;
 import com.hot.shop.admin.model.service.AdminService;
 import com.hot.shop.admin.model.vo.Auction;
 import com.hot.shop.admin.model.vo.Refund;
@@ -48,6 +47,9 @@ public class AdminController {
 	private String key;
 	@Value("#{db['imp_secret']}")
 	private String secret;
+	
+	@Autowired
+	private BoardPaging page;
 	
 	// 메인 대시보드
 	@RequestMapping(value="/admin/adminDashboardPage.do",method = RequestMethod.GET)
@@ -146,7 +148,17 @@ public class AdminController {
 			return mav;
 		}
 		
-		HashMap<String,Object> map = aService.BIDInfo(currentPage,formNo);
+		int recordCountPerPage=10;
+		int naviCountPerPage=10;
+		HashMap<String,Object> map = new HashMap<String, Object>();
+		map.put("currentPage", currentPage);
+		map.put("formNo", formNo);
+		map.put("recordCountPerPage", recordCountPerPage);
+		map.put("naviCountPerPage", naviCountPerPage);
+		page.paging(map);
+		aService.BIDInfo(map);
+		page.navi(map);
+		//HashMap<String,Object> map = aService.BIDInfo(currentPage,formNo);
 		
 		mav.addObject("currentPage",currentPage);
 		mav.addObject("map",map);
@@ -387,19 +399,17 @@ public class AdminController {
 		
 		try {
 			IamportResponse<Payment> payment_response = client.cancelPaymentByImpUid(cancel_data);
-			
 		} catch (IamportResponseException e) {
 			
 			switch(e.getHttpStatusCode()) {
 			case 401 :
-				//TODO
+				System.out.println("키 오류");
 				break;
 			case 500 :
-				//TODO
+				System.out.println("서버 응답 오류");
 				break;
 			}
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}	
 		HashMap<String,Object> map = new HashMap<String, Object>();

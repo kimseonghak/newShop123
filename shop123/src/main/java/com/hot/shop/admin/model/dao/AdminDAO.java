@@ -11,6 +11,7 @@ import org.mybatis.spring.SqlSessionTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
+import com.hot.shop.admin.common.BoardPaging;
 import com.hot.shop.admin.model.vo.Auction;
 import com.hot.shop.admin.model.vo.BID;
 import com.hot.shop.admin.model.vo.Count;
@@ -32,6 +33,9 @@ public class AdminDAO {
 	
 	@Autowired
 	private ServletContext context;
+	
+	@Autowired
+	private BoardPaging page;
 	
 //경매 기능 모음
 	//경매 정보 설정
@@ -94,45 +98,14 @@ public class AdminDAO {
 
 //판매 폼 관련 모음
 	// BID 목록과 정보 가져오는 로직
-	public ArrayList<BID> BIDList(int recordCountPerPage, int currentPage) {
-		int start = currentPage*recordCountPerPage-(recordCountPerPage-1);
-		int end = currentPage*recordCountPerPage;
-		
-		HashMap<String, Integer> map = new HashMap<String, Integer>();
-		map.put("start", start);
-		map.put("end",end);
-		return new ArrayList<BID>(sql.selectList("admin.BIDList",map));
+	public void BIDList(HashMap<String,Object> map) {
+		ArrayList<BID>list = new ArrayList<BID>(sql.selectList("admin.BIDList",map));
+		map.put("list", list);
 	}
 	// BID 목록 페이징 처리
-	public String getPageNavi(int recordCountPerPage, int currentPage, int naviCountPerPage,int formNo) {
+	public void getPageNavi(HashMap<String, Object>map) {
 		int recordTotalCount = sql.selectOne("admin.BIDTotalCount");
-		int pageTotalCount = (int)Math.ceil(recordTotalCount/(double)recordCountPerPage);
-		
-		int startNavi = ((currentPage-1)/naviCountPerPage) *naviCountPerPage+1;
-		int endNavi = startNavi+naviCountPerPage-1;
-		
-		if(endNavi>pageTotalCount) {
-			endNavi=pageTotalCount;
-		}
-		
-		StringBuilder sb = new StringBuilder();
-		sb.append("<a href='/admin/adminAuctionInfoPage.do?currentPage=1&formNo="+formNo+"' class='naviArrow'>&lt;&lt;</a>");
-		sb.append("<a href='/admin/adminAuctionInfoPage.do?currentPage="+(currentPage-10)+"&formNo="+formNo+"' class='naviArrow' id='prev'>&lt;</a>");
-		for(int i= startNavi; i<=endNavi; i++) {
-			if(i==currentPage) {
-				sb.append("<a href='/admin/adminAuctionInfoPage.do?currentPage="+i+"&formNo="+formNo+"' id='currentNavi'>"+i+"</a>");
-			}else {
-				sb.append("<a href='/admin/adminAuctionInfoPage.do?currentPage="+i+"&formNo="+formNo+"' class='otherNavi'>"+i+"</a>");
-			}
-		}
-		if((currentPage+10)<pageTotalCount) {
-			sb.append("<a href='/admin/adminAuctionInfoPage.do?currentPage="+pageTotalCount+"&formNo="+formNo+"' class='naviArrow' id='next'>&gt;</a>");
-		}else {
-			sb.append("<a href='/admin/adminAuctionInfoPage.do?currentPage="+(currentPage+10)+"&formNo="+formNo+"' class='naviArrow' id='next'>&gt;</a>");
-		}
-		
-		sb.append("<a href='/admin/adminAuctionInfoPage.do?currentPage="+pageTotalCount+"&formNo="+formNo+"' class='naviArrow'>&gt;&gt;</a>");
-		return sb.toString();
+		map.put("recordTotalCount", recordTotalCount);
 	}
 	// 경매 정보 1개 가져오는 로직 (판매 폼에 정보 입력하게 위한 용도)
 	public Auction outputAucionInfo(int auctionNo) {
