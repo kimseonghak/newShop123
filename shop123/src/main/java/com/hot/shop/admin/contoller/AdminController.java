@@ -248,7 +248,15 @@ public class AdminController {
 		HashMap<String, Object> map = new HashMap<String, Object>();
 		map.put("type", type);
 		map.put("keyword", keyword);
-		map = aService.farmQNASearchList(map,currentPage);
+		int recordCountPerPage=10;
+		int naviCountPerPage=10;
+		map.put("currentPage", currentPage);
+		map.put("recordCountPerPage", recordCountPerPage);
+		map.put("naviCountPerPage", naviCountPerPage);
+		map.put("site", "/admin/adminFarmQNAPage");
+		page.paging(map);
+		aService.farmQNASearchList(map);
+		page.navi(map);
 		
 		mav.addObject("map",map);
 		mav.addObject("currentPage",currentPage);
@@ -304,8 +312,17 @@ public class AdminController {
 		HashMap<String, Object> map = new HashMap<String, Object>();
 		map.put("type", type);
 		map.put("keyword", keyword);
+		int recordCountPerPage=10;
+		int naviCountPerPage=10;
+		map.put("currentPage", currentPage);
+		map.put("recordCountPerPage", recordCountPerPage);
+		map.put("naviCountPerPage", naviCountPerPage);
+		map.put("site", "/admin/adminUserQNAPage");
+		page.paging(map);
+		aService.farmQNASearchList(map);
+		page.navi(map);
 		
-		map = aService.userQNASearchList(map,currentPage);
+		aService.userQNASearchList(map);
 		
 		mav.addObject("map",map);
 		mav.addObject("currentPage",currentPage);
@@ -362,7 +379,15 @@ public class AdminController {
 		HashMap<String, Object> map = new HashMap<String, Object>();
 		map.put("type", type);
 		map.put("keyword", keyword);
-		map = aService.refundList(currentPage,map);
+		int recordCountPerPage=10;
+		int naviCountPerPage=10;
+		map.put("currentPage", currentPage);
+		map.put("recordCountPerPage", recordCountPerPage);
+		map.put("naviCountPerPage", naviCountPerPage);
+		map.put("site", "/admin/adminRefundPage");
+		page.paging(map);
+		aService.refundList(map);
+		page.navi(map);
 		mav.addObject("currentPage",currentPage);
 		mav.addObject("map",map);
 		mav.setViewName("admin/admin_refund");
@@ -447,7 +472,15 @@ public class AdminController {
 		HashMap<String, Object> map = new HashMap<String, Object>();
 		map.put("type", type);
 		map.put("keyword", keyword);
-		map = aService.farmSearchList(map,currentPage);
+		int recordCountPerPage=10;
+		int naviCountPerPage=10;
+		map.put("currentPage", currentPage);
+		map.put("recordCountPerPage", recordCountPerPage);
+		map.put("naviCountPerPage", naviCountPerPage);
+		map.put("site", "/admin/adminFarmPage");
+		page.paging(map);
+		aService.farmSearchList(map);
+		page.navi(map);
 		
 		mav.addObject("map",map);
 		mav.addObject("currentPage",currentPage);
@@ -530,7 +563,15 @@ public class AdminController {
 		HashMap<String, Object> map = new HashMap<String, Object>();
 		map.put("type", type);
 		map.put("keyword", keyword);
-		map = aService.memberSearchList(map,currentPage);
+		int recordCountPerPage=10;
+		int naviCountPerPage=10;
+		map.put("currentPage", currentPage);
+		map.put("recordCountPerPage", recordCountPerPage);
+		map.put("naviCountPerPage", naviCountPerPage);
+		map.put("site", "/admin/adminMemberPage");
+		page.paging(map);
+		aService.memberSearchList(map);
+		page.navi(map);
 		
 		mav.addObject("map",map);
 		mav.addObject("currentPage",currentPage);
@@ -599,11 +640,18 @@ public class AdminController {
 			mav.setViewName("commons/error");
 			return mav;
 		}
-		HashMap<String,Object>map = new HashMap<String, Object>();
+		HashMap<String, Object> map = new HashMap<String, Object>();
 		map.put("type", type);
 		map.put("keyword", keyword);
+		int recordCountPerPage=10;
+		int naviCountPerPage=10;
 		map.put("currentPage", currentPage);
-		map = aService.adminBoard(map);
+		map.put("recordCountPerPage", recordCountPerPage);
+		map.put("naviCountPerPage", naviCountPerPage);
+		map.put("site", "/admin/adminBoardPage");
+		page.paging(map);
+		aService.adminBoard(map);
+		page.navi(map);
 		
 		mav.addObject("map",map);
 		mav.setViewName("admin/admin_board");

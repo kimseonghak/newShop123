@@ -137,47 +137,14 @@ public class AdminDAO {
 	
 // 농가 문의 모음
 	// 농가 문의 목록 가져오기
-	public ArrayList<QuestionFarm> questionFarmSearchList(int recordCountPerPage, int currentPage,
-			HashMap<String, Object> map) {
-		int start = currentPage*recordCountPerPage-(recordCountPerPage-1);
-		int end = currentPage*recordCountPerPage;
-		
-		map.put("start", start);
-		map.put("end",end);
-		
-		return new ArrayList<QuestionFarm>(sql.selectList("admin.questionFarmSearchList",map));
+	public void questionFarmSearchList(HashMap<String, Object> map) {
+		ArrayList<QuestionFarm> list = new ArrayList<QuestionFarm>(sql.selectList("admin.questionFarmSearchList",map));
+		map.put("list", list);
 	}
 	// 농가 문의 목록 페이징 처리
-	public String getFarmQNASearchPageNavi(int recordCountPerPage, int currentPage, HashMap<String, Object> map,
-			int naviCountPerPage) {
+	public void getFarmQNASearchPageNavi(HashMap<String, Object> map) {
 		int recordTotalCount = sql.selectOne("admin.farmQNASearchTotalCount",map); 
-		int pageTotalCount = (int)Math.ceil(recordTotalCount/(double)recordCountPerPage);
-		
-		int startNavi = ((currentPage-1)/naviCountPerPage) *naviCountPerPage+1;
-		int endNavi = startNavi+naviCountPerPage-1;
-		
-		if(endNavi>pageTotalCount) {
-			endNavi=pageTotalCount;
-		}
-		
-		StringBuilder sb = new StringBuilder();
-		sb.append("<a href='/admin/adminFarmQNAPage.do?currentPage=1&type="+map.get("type")+"&keyword="+map.get("keyword")+"' class='naviArrow'>&lt;&lt;</a>");
-		sb.append("<a href='/admin/adminFarmQNAPage.do?currentPage="+(currentPage-10)+"' class='naviArrow' id='prev'>&lt;</a>");
-		for(int i= startNavi; i<=endNavi; i++) {
-			if(i==currentPage) {
-				sb.append("<a href='/admin/adminFarmQNAPage.do?currentPage="+i+"&type="+map.get("type")+"&keyword="+map.get("keyword")+"' id='currentNavi'>"+i+"</a>");
-			}else {
-				sb.append("<a href='/admin/adminFarmQNAPage.do?currentPage="+i+"&type="+map.get("type")+"&keyword="+map.get("keyword")+"' class='otherNavi'>"+i+"</a>");
-			}
-		}
-		if((currentPage+10)>pageTotalCount) {
-			sb.append("<a href='/admin/adminFarmQNAPage.do?currentPage="+pageTotalCount+"&type="+map.get("type")+"&keyword="+map.get("keyword")+"' class='naviArrow' id='next'>&gt;</a>");
-		}else {
-			sb.append("<a href='/admin/adminFarmQNAPage.do?currentPage="+(currentPage+10)+"&type="+map.get("type")+"&keyword="+map.get("keyword")+"' class='naviArrow' id='next'>&gt;</a>");
-		}
-		sb.append("<a href='/admin/adminFarmQNAPage.do?currentPage="+pageTotalCount+"&type="+map.get("type")+"&keyword="+map.get("keyword")+"' class='naviArrow'>&gt;&gt;</a>");
-		
-		return sb.toString();
+		map.put("recordTotalCount", recordTotalCount);
 	}
 	// 농가 문의 내용 가져오기
 	public QuestionFarm questionFarmContent(int questionFarmNo) {
@@ -191,48 +158,15 @@ public class AdminDAO {
 	
 //유저 문의 기능 모음
 	// 유저 문의 목록 가져오기
-	public ArrayList<QuestionUser> questionUserSearchList(int recordCountPerPage, int currentPage,
-			HashMap<String, Object> map) {
-		int start = currentPage*recordCountPerPage-(recordCountPerPage-1);
-		int end = currentPage*recordCountPerPage;
-		
-		map.put("start", start);
-		map.put("end",end);
-		
-		return new ArrayList<QuestionUser>(sql.selectList("admin.questionUserSearchList",map));
+	public void questionUserSearchList(HashMap<String, Object> map) {
+		ArrayList<QuestionUser> list = new ArrayList<QuestionUser>(sql.selectList("admin.questionUserSearchList",map));
+		map.put("list", list);
 	}
 	
 	// 유저 문의 페이징 처리
-	public String getUserQNASearchPageNavi(int recordCountPerPage, int currentPage, HashMap<String, Object> map,
-			int naviCountPerPage) {
+	public void getUserQNASearchPageNavi(HashMap<String, Object> map) {
 		int recordTotalCount = sql.selectOne("admin.userQNASearchTotalCount",map); 
-		int pageTotalCount = (int)Math.ceil(recordTotalCount/(double)recordCountPerPage);
-		
-		int startNavi = ((currentPage-1)/naviCountPerPage) *naviCountPerPage+1;
-		int endNavi = startNavi+naviCountPerPage-1;
-		
-		if(endNavi>pageTotalCount) {
-			endNavi=pageTotalCount;
-		}
-		
-		StringBuilder sb = new StringBuilder();
-		sb.append("<a href='/admin/adminUserQNAPage.do?currentPage=1&type="+map.get("type")+"&keyword="+map.get("keyword")+"' class='naviArrow'>&lt;&lt;</a>");
-		sb.append("<a href='/admin/adminUserQNAPage.do?currentPage="+(currentPage-10)+"' class='naviArrow' id='prev'>&lt;</a>");
-		for(int i= startNavi; i<=endNavi; i++) {
-			if(i==currentPage) {
-				sb.append("<a href='/admin/adminUserQNAPage.do?currentPage="+i+"&type="+map.get("type")+"&keyword="+map.get("keyword")+"' id='currentNavi'>"+i+"</a>");
-			}else {
-				sb.append("<a href='/admin/adminUserQNAPage.do?currentPage="+i+"&type="+map.get("type")+"&keyword="+map.get("keyword")+"' class='otherNavi'>"+i+"</a>");
-			}
-		}
-		if((currentPage+10)>pageTotalCount) {
-			sb.append("<a href='/admin/adminUserQNAPage.do?currentPage="+pageTotalCount+"&type="+map.get("type")+"&keyword="+map.get("keyword")+"' class='naviArrow' id='next'>&gt;</a>");
-		}else {
-			sb.append("<a href='/admin/adminUserQNAPage.do?currentPage="+(currentPage+10)+"&type="+map.get("type")+"&keyword="+map.get("keyword")+"' class='naviArrow' id='next'>&gt;</a>");
-		}
-		sb.append("<a href='/admin/adminUserQNAPage.do?currentPage="+pageTotalCount+"&type="+map.get("type")+"&keyword="+map.get("keyword")+"' class='naviArrow'>&gt;&gt;</a>");
-		
-		return sb.toString();
+		map.put("recordTotalCount", recordTotalCount);
 	}
 	// 유저 문의 내용 가져오기
 	public QuestionUser questionUserContent(int questionUserNo) {
@@ -253,44 +187,14 @@ public class AdminDAO {
 		return sql.update("admin.memberEndYNUpdate",map);
 	}
 	// 유저 목록 가져오기
-	public ArrayList<Member> memberSearchList(int currentPage, int recordCountPerPage, HashMap<String, Object> map) {
-		int start = currentPage*recordCountPerPage-(recordCountPerPage-1);
-		int end = currentPage*recordCountPerPage;
-		map.put("start", start);
-		map.put("end", end);
-		return new ArrayList<Member>(sql.selectList("admin.memberSearchList",map));
+	public void memberSearchList(HashMap<String, Object> map) {
+		ArrayList<Member> list = new ArrayList<Member>(sql.selectList("admin.memberSearchList",map));
+		map.put("list", list);
 	}
 	// 유저 목록 페이징 처리
-	public String getMemberSearchPageNavi(int recordCountPerPage, int currentPage, HashMap<String, Object> map,
-			int naviCountPerPage) {
+	public void getMemberSearchPageNavi(HashMap<String, Object> map) {
 		int recordTotalCount = sql.selectOne("admin.memberSearchTotalCount",map); 
-		int pageTotalCount = (int)Math.ceil(recordTotalCount/(double)recordCountPerPage);
-		
-		int startNavi = ((currentPage-1)/naviCountPerPage) *naviCountPerPage+1;
-		int endNavi = startNavi+naviCountPerPage-1;
-		
-		if(endNavi>pageTotalCount) {
-			endNavi=pageTotalCount;
-		}
-		
-		StringBuilder sb = new StringBuilder();
-		sb.append("<a href='/admin/adminMemberPage.do?currentPage=1&type="+map.get("type")+"&keyword="+map.get("keyword")+"' class='naviArrow'>&lt;&lt;</a>");
-		sb.append("<a href='/admin/adminMemberPage.do?currentPage="+(currentPage-10)+"' class='naviArrow' id='prev'>&lt;</a>");
-		for(int i= startNavi; i<=endNavi; i++) {
-			if(i==currentPage) {
-				sb.append("<a href='/admin/adminMemberPage.do?currentPage="+i+"&type="+map.get("type")+"&keyword="+map.get("keyword")+"' id='currentNavi'>"+i+"</a>");
-			}else {
-				sb.append("<a href='/admin/adminMemberPage.do?currentPage="+i+"&type="+map.get("type")+"&keyword="+map.get("keyword")+"' class='otherNavi'>"+i+"</a>");
-			}
-		}
-		if((currentPage+10)>pageTotalCount) {
-			sb.append("<a href='/admin/adminMemberPage.do?currentPage="+pageTotalCount+"&type="+map.get("type")+"&keyword="+map.get("keyword")+"' class='naviArrow' id='next'>&gt;</a>");
-		}else {
-			sb.append("<a href='/admin/adminMemberPage.do?currentPage="+(currentPage+10)+"&type="+map.get("type")+"&keyword="+map.get("keyword")+"' class='naviArrow' id='next'>&gt;</a>");
-		}
-		sb.append("<a href='/admin/adminMemberPage.do?currentPage="+pageTotalCount+"&type="+map.get("type")+"&keyword="+map.get("keyword")+"' class='naviArrow'>&gt;&gt;</a>");
-		
-		return sb.toString();
+		map.put("recordTotalCount", recordTotalCount);
 	}
 
 // 농가 관련 기능 모음
@@ -299,45 +203,15 @@ public class AdminDAO {
 		return sql.selectOne("admin.farmInfo",farmNo);
 	}
 	// 농가 목록 가져오기
-	public ArrayList<Farm> farmSearchList(int currentPage, int recordCountPerPage, HashMap<String, Object> map) {
-		int start = currentPage*recordCountPerPage-(recordCountPerPage-1);
-		int end = currentPage*recordCountPerPage;
-		map.put("start", start);
-		map.put("end", end);
-		return new ArrayList<Farm>(sql.selectList("admin.farmSearchList",map));
+	public void farmSearchList(HashMap<String, Object> map) {
+		ArrayList<Farm> list = new ArrayList<Farm>(sql.selectList("admin.farmSearchList",map));
+		map.put("list", list);
 	}
 	// 농가 목록 페이징 처리
-	public String getFarmSearchPageNavi(int recordCountPerPage, int currentPage, HashMap<String, Object> map,
-			int naviCountPerPage) {
-		
+	public void getFarmSearchPageNavi(HashMap<String, Object> map) {
 		int recordTotalCount = sql.selectOne("admin.farmSearchTotalCount",map); 
-		int pageTotalCount = (int)Math.ceil(recordTotalCount/(double)recordCountPerPage);
+		map.put("recordTotalCount", recordTotalCount);
 		
-		int startNavi = ((currentPage-1)/naviCountPerPage) *naviCountPerPage+1;
-		int endNavi = startNavi+naviCountPerPage-1;
-		
-		if(endNavi>pageTotalCount) {
-			endNavi=pageTotalCount;
-		}
-		
-		StringBuilder sb = new StringBuilder();
-		sb.append("<a href='/admin/adminFarmPage.do?currentPage=1&type="+map.get("type")+"&keyword="+map.get("keyword")+"' class='naviArrow'>&lt;&lt;</a>");
-		sb.append("<a href='/admin/adminFarmPage.do?currentPage="+(currentPage-10)+"' class='naviArrow' id='prev'>&lt;</a>");
-		for(int i= startNavi; i<=endNavi; i++) {
-			if(i==currentPage) {
-				sb.append("<a href='/admin/adminFarmPage.do?currentPage="+i+"&type="+map.get("type")+"&keyword="+map.get("keyword")+"' id='currentNavi'>"+i+"</a>");
-			}else {
-				sb.append("<a href='/admin/adminFarmPage.do?currentPage="+i+"&type="+map.get("type")+"&keyword="+map.get("keyword")+"' class='otherNavi'>"+i+"</a>");
-			}
-		}
-		if((currentPage+10)>pageTotalCount) {
-			sb.append("<a href='/admin/adminFarmPage.do?currentPage="+pageTotalCount+"&type="+map.get("type")+"&keyword="+map.get("keyword")+"' class='naviArrow' id='next'>&gt;</a>");
-		}else {
-			sb.append("<a href='/admin/adminFarmPage.do?currentPage="+(currentPage+10)+"&type="+map.get("type")+"&keyword="+map.get("keyword")+"' class='naviArrow' id='next'>&gt;</a>");
-		}
-		sb.append("<a href='/admin/adminFarmPage.do?currentPage="+pageTotalCount+"&type="+map.get("type")+"&keyword="+map.get("keyword")+"' class='naviArrow'>&gt;&gt;</a>");
-		
-		return sb.toString();
 	}
 	// 농가 탈퇴 / 복구 처리
 	public int farmEndYNUpdate(HashMap<String, Object> map) {
@@ -346,45 +220,14 @@ public class AdminDAO {
 	
 //환불 관련 기능 모음
 	// 환불 목록 가져오기
-	public ArrayList<Refund> refundList(int currentPage, int recordCountPerPage, HashMap<String, Object> map) {
-		int start = currentPage*recordCountPerPage-(recordCountPerPage-1);
-		int end = currentPage*recordCountPerPage;
-		map.put("start", start);
-		map.put("end", end);
-		return new ArrayList<Refund>(sql.selectList("admin.refundList",map));
+	public void refundList(HashMap<String, Object> map) {
+		ArrayList<Refund> list = new ArrayList<Refund>(sql.selectList("admin.refundList",map));
+		map.put("list", list);
 	}
 	// 환불 목록 페이징 처리
-	public String getRefundPageNavi(int recordCountPerPage, int currentPage, HashMap<String, Object> map,
-			int naviCountPerPage) {
-		
+	public void getRefundPageNavi(HashMap<String, Object> map) {
 		int recordTotalCount = sql.selectOne("admin.refundTotalCount",map); 
-		int pageTotalCount = (int)Math.ceil(recordTotalCount/(double)recordCountPerPage);
-		
-		int startNavi = ((currentPage-1)/naviCountPerPage) *naviCountPerPage+1;
-		int endNavi = startNavi+naviCountPerPage-1;
-		
-		if(endNavi>pageTotalCount) {
-			endNavi=pageTotalCount;
-		}
-		
-		StringBuilder sb = new StringBuilder();
-		sb.append("<a href='/admin/adminRefundPage.do?currentPage=1&type="+map.get("type")+"&keyword="+map.get("keyword")+"' class='naviArrow'>&lt;&lt;</a>");
-		sb.append("<a href='/admin/adminRefundPage.do?currentPage="+(currentPage-10)+"' class='naviArrow' id='prev'>&lt;</a>");
-		for(int i= startNavi; i<=endNavi; i++) {
-			if(i==currentPage) {
-				sb.append("<a href='/admin/adminRefundPage.do?currentPage="+i+"&type="+map.get("type")+"&keyword="+map.get("keyword")+"' id='currentNavi'>"+i+"</a>");
-			}else {
-				sb.append("<a href='/admin/adminRefundPage.do?currentPage="+i+"&type="+map.get("type")+"&keyword="+map.get("keyword")+"' class='otherNavi'>"+i+"</a>");
-			}
-		}
-		if((currentPage+10)>pageTotalCount) {
-			sb.append("<a href='/admin/adminRefundPage.do?currentPage="+pageTotalCount+"&type="+map.get("type")+"&keyword="+map.get("keyword")+"' class='naviArrow' id='next'>&gt;</a>");
-		}else {
-			sb.append("<a href='/admin/adminRefundPage.do?currentPage="+(currentPage+10)+"&type="+map.get("type")+"&keyword="+map.get("keyword")+"' class='naviArrow' id='next'>&gt;</a>");
-		}
-		sb.append("<a href='/admin/adminRefundPage.do?currentPage="+pageTotalCount+"&type="+map.get("type")+"&keyword="+map.get("keyword")+"' class='naviArrow'>&gt;&gt;</a>");
-		
-		return sb.toString();
+		map.put("recordTotalCount", recordTotalCount);
 	}
 	// 환불 승인 및 거절 업데이트
 	public boolean refundUpdate(HashMap<String, Object> map) {
@@ -393,44 +236,14 @@ public class AdminDAO {
 
 //홍보 게시판 기능 모음
 	//홍보 게시판 목록 가져오기
-	public ArrayList<Promotion> promotionList(int recordCountPerPage, HashMap<String, Object> map) {
-		int currentPage = (int) map.get("currentPage");
-		int start = currentPage*recordCountPerPage-(recordCountPerPage-1);
-		int end = currentPage*recordCountPerPage;
-		map.put("start", start);
-		map.put("end", end);
-		return new ArrayList<Promotion>(sql.selectList("admin.promotionList",map));
+	public void promotionList(HashMap<String, Object> map) {
+		ArrayList<Promotion> list = new ArrayList<Promotion>(sql.selectList("admin.promotionList",map));
+		map.put("list", list);
 	}
 	//홍보 게시판 페이징 처리
-	public String getPromotionPageNavi(int recordCountPerPage, HashMap<String, Object> map, int naviCountPerPage) {
+	public void getPromotionPageNavi(HashMap<String, Object> map) {
 		int recordTotalCount = sql.selectOne("admin.promotionTotalCount",map); 
-		int pageTotalCount = (int)Math.ceil(recordTotalCount/(double)recordCountPerPage);
-		int currentPage = (int) map.get("currentPage");
-		int startNavi = ((currentPage-1)/naviCountPerPage) *naviCountPerPage+1;
-		int endNavi = startNavi+naviCountPerPage-1;
-		
-		if(endNavi>pageTotalCount) {
-			endNavi=pageTotalCount;
-		}
-		
-		StringBuilder sb = new StringBuilder();
-		sb.append("<a href='/admin/adminBoardPage.do?currentPage=1&type="+map.get("type")+"&keyword="+map.get("keyword")+"' class='naviArrow'>&lt;&lt;</a>");
-		sb.append("<a href='/admin/adminBoardPage.do?currentPage="+(currentPage-10)+"' class='naviArrow' id='prev'>&lt;</a>");
-		for(int i= startNavi; i<=endNavi; i++) {
-			if(i==currentPage) {
-				sb.append("<a href='/admin/adminBoardPage.do?currentPage="+i+"&type="+map.get("type")+"&keyword="+map.get("keyword")+"' id='currentNavi'>"+i+"</a>");
-			}else {
-				sb.append("<a href='/admin/adminBoardPage.do?currentPage="+i+"&type="+map.get("type")+"&keyword="+map.get("keyword")+"' class='otherNavi'>"+i+"</a>");
-			}
-		}
-		if((currentPage+10)>pageTotalCount) {
-			sb.append("<a href='/admin/adminBoardPage.do?currentPage="+pageTotalCount+"&type="+map.get("type")+"&keyword="+map.get("keyword")+"' class='naviArrow' id='next'>&gt;</a>");
-		}else {
-			sb.append("<a href='/admin/adminBoardPage.do?currentPage="+(currentPage+10)+"&type="+map.get("type")+"&keyword="+map.get("keyword")+"' class='naviArrow' id='next'>&gt;</a>");
-		}
-		sb.append("<a href='/admin/adminBoardPage.do?currentPage="+pageTotalCount+"&type="+map.get("type")+"&keyword="+map.get("keyword")+"' class='naviArrow'>&gt;&gt;</a>");
-		
-		return sb.toString();
+		map.put("recordTotalCount", recordTotalCount);
 	}
 	// 홍보 게시판 삭제 / 복구 기능
 	public boolean promotionEndYNUpdate(HashMap<String, Object> map) {

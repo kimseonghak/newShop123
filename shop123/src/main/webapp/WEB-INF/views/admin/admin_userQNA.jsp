@@ -264,7 +264,9 @@
 		$('.questionUser').click(function(){
 			var qUserNo = $(this).prev().html();
 			var currentPage = ${currentPage};
-			location.replace('/admin/adminUserQNAContent.do?currentPage='+currentPage+'&questionUserNo='+qUserNo);
+			var type = "${map.type}";
+			var keyword = "${map.keyword}";
+			location.replace('/admin/adminUserQNAContent.do?currentPage='+currentPage+'&questionUserNo='+qUserNo+'&type='+type+'&keyword='+keyword);
 		});
 <%-- 유저 이름 클릭시 유저 정보창 출력 --%>
 		$('.user').click(function(){

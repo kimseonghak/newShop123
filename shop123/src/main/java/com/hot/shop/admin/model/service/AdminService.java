@@ -42,25 +42,25 @@ public interface AdminService {
 
 	ArrayList<QuestionFarm> questionFarm();
 
-	HashMap<String, Object> farmQNASearchList(HashMap<String, Object> map, int currentPage);
+	void farmQNASearchList(HashMap<String, Object> map);
 
 	QuestionFarm questionFarmContent(int questionFarmNo);
 
-	HashMap<String, Object> userQNASearchList(HashMap<String, Object> map, int currentPage);
+	void userQNASearchList(HashMap<String, Object> map);
 
 	Member selectMember(int userNo);
 
 	int memberEndYNUpdate(HashMap<String, Object> map);
 
-	HashMap<String, Object> memberSearchList(HashMap<String, Object> map, int currentPage);
+	void memberSearchList(HashMap<String, Object> map);
 
-	HashMap<String, Object> refundList(int currentPage, HashMap<String, Object> map);
+	void refundList(HashMap<String, Object> map);
 
 	boolean refundUpdate(HashMap<String, Object> map);
 
 	Farm farmInfo(int farmNo);
 
-	HashMap<String, Object> farmSearchList(HashMap<String, Object> map, int currentPage);
+	void farmSearchList(HashMap<String, Object> map);
 
 	int farmEndYNUpdate(HashMap<String, Object> map);
 
@@ -76,7 +76,7 @@ public interface AdminService {
 
 	HashMap<String, Object> sugWork();
 
-	HashMap<String, Object> adminBoard(HashMap<String, Object> map);
+	void adminBoard(HashMap<String, Object> map);
 
 	boolean promotionEndYNUpdate(HashMap<String, Object> map);
 

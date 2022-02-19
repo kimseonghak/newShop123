@@ -117,16 +117,9 @@ public class AdminServiceImpl implements AdminService{
 	}
 
 	@Override
-	public HashMap<String, Object> memberSearchList(HashMap<String, Object> map, int currentPage) {
-		int recordCountPerPage=10;
-		ArrayList<Member> list = aDAO.memberSearchList(currentPage,recordCountPerPage,map);
-		int naviCountPerPage=10;
-		String pageNavi = aDAO.getMemberSearchPageNavi(recordCountPerPage,currentPage,map,naviCountPerPage);
-		
-		map.put("list", list);
-		map.put("pageNavi", pageNavi);
-		
-		return map;
+	public void memberSearchList(HashMap<String, Object> map) {
+		aDAO.memberSearchList(map);
+		aDAO.getMemberSearchPageNavi(map);
 	}
 	
 	@Override
@@ -136,16 +129,9 @@ public class AdminServiceImpl implements AdminService{
 
 // 농가 관련 기능
 	@Override
-	public HashMap<String, Object> farmSearchList(HashMap<String, Object> map, int currentPage) {
-		int recordCountPerPage=10;
-		ArrayList<Farm> list = aDAO.farmSearchList(currentPage,recordCountPerPage,map);
-		int naviCountPerPage=10;
-		String pageNavi = aDAO.getFarmSearchPageNavi(recordCountPerPage,currentPage,map,naviCountPerPage);
-		
-		map.put("list", list);
-		map.put("pageNavi", pageNavi);
-		
-		return map;
+	public void farmSearchList(HashMap<String, Object> map) {
+		aDAO.farmSearchList(map);
+		aDAO.getFarmSearchPageNavi(map);
 	}
 	
 	@Override
@@ -160,16 +146,9 @@ public class AdminServiceImpl implements AdminService{
 	
 // 환불 관련 기능
 	@Override
-	public HashMap<String, Object> refundList(int currentPage, HashMap<String, Object> map) {
-		int recordCountPerPage=10;
-		ArrayList<Refund> list = aDAO.refundList(currentPage,recordCountPerPage,map);
-		int naviCountPerPage=10;
-		String pageNavi = aDAO.getRefundPageNavi(recordCountPerPage,currentPage,map,naviCountPerPage);
-		
-		map.put("list", list);
-		map.put("pageNavi", pageNavi);
-		
-		return map;
+	public void refundList(HashMap<String, Object> map) {
+		aDAO.refundList(map);
+		aDAO.getRefundPageNavi(map);
 	}
 
 	@Override
@@ -184,15 +163,9 @@ public class AdminServiceImpl implements AdminService{
 
 // 농가 문의 관련 기능
 	@Override
-	public HashMap<String, Object> farmQNASearchList(HashMap<String, Object> map, int currentPage) {
-		int recordCountPerPage=10;
-		ArrayList<QuestionFarm> list = aDAO.questionFarmSearchList(recordCountPerPage,currentPage,map);
-		int naviCountPerPage=10;
-		String pageNavi = aDAO.getFarmQNASearchPageNavi(recordCountPerPage,currentPage,map,naviCountPerPage);
-		map.put("list", list);
-		map.put("pageNavi", pageNavi);
-		
-		return map;
+	public void farmQNASearchList(HashMap<String, Object> map) {
+		aDAO.questionFarmSearchList(map);
+		aDAO.getFarmQNASearchPageNavi(map);
 	}
 
 	@Override
@@ -202,15 +175,9 @@ public class AdminServiceImpl implements AdminService{
 
 // 유저 문의 관련 기능
 	@Override
-	public HashMap<String, Object> userQNASearchList(HashMap<String, Object> map, int currentPage) {
-		int recordCountPerPage=10;
-		ArrayList<QuestionUser> list = aDAO.questionUserSearchList(recordCountPerPage,currentPage,map);
-		int naviCountPerPage=10;
-		String pageNavi = aDAO.getUserQNASearchPageNavi(recordCountPerPage,currentPage,map,naviCountPerPage);
-		map.put("list", list);
-		map.put("pageNavi", pageNavi);
-		
-		return map;
+	public void userQNASearchList(HashMap<String, Object> map) {
+		aDAO.questionUserSearchList(map);
+		aDAO.getUserQNASearchPageNavi(map);
 	}
 	
 	@Override
@@ -231,15 +198,9 @@ public class AdminServiceImpl implements AdminService{
 	
 // 게시판 관련 기능
 	@Override
-	public HashMap<String, Object> adminBoard(HashMap<String, Object> map) {
-		int recordCountPerPage=10;
-		ArrayList<Promotion> list = aDAO.promotionList(recordCountPerPage,map);
-		int naviCountPerPage=10;
-		String pageNavi = aDAO.getPromotionPageNavi(recordCountPerPage,map,naviCountPerPage);
-		map.put("list", list);
-		map.put("pageNavi", pageNavi);
-		
-		return map;
+	public void adminBoard(HashMap<String, Object> map) {
+		aDAO.promotionList(map);
+		aDAO.getPromotionPageNavi(map);
 	}
 
 	@Override
