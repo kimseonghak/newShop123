@@ -77,7 +77,7 @@
 								<th style="width: 20%;">작성자</th>
 							</tr>
 							<c:forEach items="${requestScope.qUser }" var="q">
-								<tr class="qUserList userQNA">
+								<tr class="adminList userQNA">
 									<td>${q.questionUserNo }</td>
 									<td>${q.questionUserTitle }</td>
 									<td>${q.userNick }</td>
@@ -102,7 +102,7 @@
 								<th style="width: 20%;">작성자</th>
 							</tr>
 							<c:forEach items="${requestScope.qFarm }" var="q">
-								<tr class="qUserList farmQNA">
+								<tr class="adminList farmQNA">
 									<td style="width:15%;">${q.questionFarmNo }</td>
 									<td style="width:65%;">${q.questionFarmTitle }</td>
 									<td style="width:20%;">${q.farmName }</td>
@@ -117,7 +117,7 @@
 					<div class="boardHeader">
 <%-- 유저 환불 목록 --%>
 						<span class="boardTitle boardSpan">유저 환불목록</span> 
-						<span class="boardPlus boardSpan"><a href="">+ 더보기</a></span>
+						<span class="boardPlus boardSpan"><a href="/admin/adminRefundPage.do">+ 더보기</a></span>
 					</div>
 					<div class="boardBody">
 						<table class="boardTBL" style="word-break: break-all;">
@@ -127,7 +127,7 @@
 								<th style="width: 70%;">주문 번호</th>
 							</tr>
 							<c:forEach items="${requestScope.refund }" var="r">
-								<tr class="qUserList userQNA">
+								<tr class="adminList refundList">
 									<td>${r.refundNo }</td>
 									<td>${r.questionUserNo }</td>
 									<td>${r.orderNo }</td>
@@ -306,6 +306,9 @@
 		$('.farmQNA').click(function(){
 			var qBoardNo = $(this).children().eq(0).html();
 			location.replace("/admin/adminFarmQNAContent.do?questionFarmNo="+qBoardNo);
+		});
+		$('.refundList').click(function(){
+			location.replace("/admin/adminRefundPage.do");
 		});
 	</script>
 </body>

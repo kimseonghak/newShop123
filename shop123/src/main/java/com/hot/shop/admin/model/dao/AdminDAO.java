@@ -102,8 +102,8 @@ public class AdminDAO {
 		ArrayList<BID>list = new ArrayList<BID>(sql.selectList("admin.BIDList",map));
 		map.put("list", list);
 	}
-	// BID 목록 페이징 처리
-	public void getPageNavi(HashMap<String, Object>map) {
+	// BID 전체 수
+	public void bidTotalCount(HashMap<String, Object>map) {
 		int recordTotalCount = sql.selectOne("admin.BIDTotalCount");
 		map.put("recordTotalCount", recordTotalCount);
 	}
@@ -141,8 +141,8 @@ public class AdminDAO {
 		ArrayList<QuestionFarm> list = new ArrayList<QuestionFarm>(sql.selectList("admin.questionFarmSearchList",map));
 		map.put("list", list);
 	}
-	// 농가 문의 목록 페이징 처리
-	public void getFarmQNASearchPageNavi(HashMap<String, Object> map) {
+	// 농가 문의 목록 전체 수
+	public void farmQNATotalCount(HashMap<String, Object> map) {
 		int recordTotalCount = sql.selectOne("admin.farmQNASearchTotalCount",map); 
 		map.put("recordTotalCount", recordTotalCount);
 	}
@@ -163,8 +163,8 @@ public class AdminDAO {
 		map.put("list", list);
 	}
 	
-	// 유저 문의 페이징 처리
-	public void getUserQNASearchPageNavi(HashMap<String, Object> map) {
+	// 유저 문의 전체 수
+	public void userQNATotalCount(HashMap<String, Object> map) {
 		int recordTotalCount = sql.selectOne("admin.userQNASearchTotalCount",map); 
 		map.put("recordTotalCount", recordTotalCount);
 	}
@@ -191,8 +191,8 @@ public class AdminDAO {
 		ArrayList<Member> list = new ArrayList<Member>(sql.selectList("admin.memberSearchList",map));
 		map.put("list", list);
 	}
-	// 유저 목록 페이징 처리
-	public void getMemberSearchPageNavi(HashMap<String, Object> map) {
+	// 유저 목록 전체 수
+	public void memberListTotalCount(HashMap<String, Object> map) {
 		int recordTotalCount = sql.selectOne("admin.memberSearchTotalCount",map); 
 		map.put("recordTotalCount", recordTotalCount);
 	}
@@ -207,8 +207,8 @@ public class AdminDAO {
 		ArrayList<Farm> list = new ArrayList<Farm>(sql.selectList("admin.farmSearchList",map));
 		map.put("list", list);
 	}
-	// 농가 목록 페이징 처리
-	public void getFarmSearchPageNavi(HashMap<String, Object> map) {
+	// 농가 목록 전체 수
+	public void farmListTotalCount(HashMap<String, Object> map) {
 		int recordTotalCount = sql.selectOne("admin.farmSearchTotalCount",map); 
 		map.put("recordTotalCount", recordTotalCount);
 		
@@ -224,8 +224,8 @@ public class AdminDAO {
 		ArrayList<Refund> list = new ArrayList<Refund>(sql.selectList("admin.refundList",map));
 		map.put("list", list);
 	}
-	// 환불 목록 페이징 처리
-	public void getRefundPageNavi(HashMap<String, Object> map) {
+	// 환불 목록 전체 수
+	public void refundListTotalCount(HashMap<String, Object> map) {
 		int recordTotalCount = sql.selectOne("admin.refundTotalCount",map); 
 		map.put("recordTotalCount", recordTotalCount);
 	}
@@ -240,8 +240,8 @@ public class AdminDAO {
 		ArrayList<Promotion> list = new ArrayList<Promotion>(sql.selectList("admin.promotionList",map));
 		map.put("list", list);
 	}
-	//홍보 게시판 페이징 처리
-	public void getPromotionPageNavi(HashMap<String, Object> map) {
+	//홍보 게시판 전체 수
+	public void promotionTotalCount(HashMap<String, Object> map) {
 		int recordTotalCount = sql.selectOne("admin.promotionTotalCount",map); 
 		map.put("recordTotalCount", recordTotalCount);
 	}

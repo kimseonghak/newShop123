@@ -107,7 +107,7 @@ public class AdminServiceImpl implements AdminService{
 	@Override
 	public void BIDInfo(HashMap<String, Object>map) {
 		aDAO.BIDList(map);
-		aDAO.getPageNavi(map);
+		aDAO.bidTotalCount(map);
 	}
 
 // 멤버 관리 관련 기능
@@ -119,7 +119,7 @@ public class AdminServiceImpl implements AdminService{
 	@Override
 	public void memberSearchList(HashMap<String, Object> map) {
 		aDAO.memberSearchList(map);
-		aDAO.getMemberSearchPageNavi(map);
+		aDAO.memberListTotalCount(map);
 	}
 	
 	@Override
@@ -131,7 +131,7 @@ public class AdminServiceImpl implements AdminService{
 	@Override
 	public void farmSearchList(HashMap<String, Object> map) {
 		aDAO.farmSearchList(map);
-		aDAO.getFarmSearchPageNavi(map);
+		aDAO.farmListTotalCount(map);
 	}
 	
 	@Override
@@ -148,7 +148,7 @@ public class AdminServiceImpl implements AdminService{
 	@Override
 	public void refundList(HashMap<String, Object> map) {
 		aDAO.refundList(map);
-		aDAO.getRefundPageNavi(map);
+		aDAO.refundListTotalCount(map);
 	}
 
 	@Override
@@ -165,7 +165,7 @@ public class AdminServiceImpl implements AdminService{
 	@Override
 	public void farmQNASearchList(HashMap<String, Object> map) {
 		aDAO.questionFarmSearchList(map);
-		aDAO.getFarmQNASearchPageNavi(map);
+		aDAO.farmQNATotalCount(map);
 	}
 
 	@Override
@@ -177,7 +177,7 @@ public class AdminServiceImpl implements AdminService{
 	@Override
 	public void userQNASearchList(HashMap<String, Object> map) {
 		aDAO.questionUserSearchList(map);
-		aDAO.getUserQNASearchPageNavi(map);
+		aDAO.userQNATotalCount(map);
 	}
 	
 	@Override
@@ -200,7 +200,7 @@ public class AdminServiceImpl implements AdminService{
 	@Override
 	public void adminBoard(HashMap<String, Object> map) {
 		aDAO.promotionList(map);
-		aDAO.getPromotionPageNavi(map);
+		aDAO.promotionTotalCount(map);
 	}
 
 	@Override

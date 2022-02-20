@@ -155,7 +155,7 @@ public class AdminController {
 		map.put("formNo", formNo);
 		map.put("recordCountPerPage", recordCountPerPage);
 		map.put("naviCountPerPage", naviCountPerPage);
-		page.paging(map);
+		page.pagingList(map);
 		aService.BIDInfo(map);
 		page.navi(map);
 		//HashMap<String,Object> map = aService.BIDInfo(currentPage,formNo);
@@ -234,7 +234,7 @@ public class AdminController {
 	
 	// farmQNA 페이지
 	@RequestMapping(value = "/admin/adminFarmQNAPage.do", method = RequestMethod.GET)
-	public ModelAndView farmQNASearch(@RequestParam(required = false, defaultValue = "default") String type, 
+	public ModelAndView farmQNAPage(@RequestParam(required = false, defaultValue = "default") String type, 
 			@RequestParam(required = false, defaultValue = "") String keyword, 
 			@RequestParam(required = false, defaultValue = "1") int currentPage, ModelAndView mav,
 			@SessionAttribute(required = false) Farm farm) {
@@ -254,7 +254,7 @@ public class AdminController {
 		map.put("recordCountPerPage", recordCountPerPage);
 		map.put("naviCountPerPage", naviCountPerPage);
 		map.put("site", "/admin/adminFarmQNAPage");
-		page.paging(map);
+		page.pagingList(map);
 		aService.farmQNASearchList(map);
 		page.navi(map);
 		
@@ -297,7 +297,7 @@ public class AdminController {
 	
 	// userQNA 검색 페이지
 	@RequestMapping(value = "/admin/adminUserQNAPage.do", method = RequestMethod.GET)
-	public ModelAndView userQNASearch(
+	public ModelAndView userQNAPage(
 			@RequestParam(required = false, defaultValue = "default") String type, 
 			@RequestParam(required = false, defaultValue = "") String keyword, 
 			@RequestParam(required = false, defaultValue = "1") int currentPage, ModelAndView mav,
@@ -318,11 +318,9 @@ public class AdminController {
 		map.put("recordCountPerPage", recordCountPerPage);
 		map.put("naviCountPerPage", naviCountPerPage);
 		map.put("site", "/admin/adminUserQNAPage");
-		page.paging(map);
-		aService.farmQNASearchList(map);
-		page.navi(map);
-		
+		page.pagingList(map);
 		aService.userQNASearchList(map);
+		page.navi(map);
 		
 		mav.addObject("map",map);
 		mav.addObject("currentPage",currentPage);
@@ -364,7 +362,7 @@ public class AdminController {
 	
 	// 최초 refund 페이지
 	@RequestMapping(value = "/admin/adminRefundPage.do", method = RequestMethod.GET)
-	public ModelAndView adminRefund(ModelAndView mav,
+	public ModelAndView adminRefundPage(ModelAndView mav,
 			@RequestParam(required = false,defaultValue = "1") int currentPage,
 			@RequestParam(required = false,defaultValue = "default") String type,
 			@RequestParam(required = false,defaultValue = "") String keyword,
@@ -385,7 +383,7 @@ public class AdminController {
 		map.put("recordCountPerPage", recordCountPerPage);
 		map.put("naviCountPerPage", naviCountPerPage);
 		map.put("site", "/admin/adminRefundPage");
-		page.paging(map);
+		page.pagingList(map);
 		aService.refundList(map);
 		page.navi(map);
 		mav.addObject("currentPage",currentPage);
@@ -450,7 +448,7 @@ public class AdminController {
 	
 	// 농가 검색 페이지
 	@RequestMapping(value = "/admin/adminFarmPage.do", method = RequestMethod.GET)
-	public ModelAndView farmSearchList(ModelAndView mav,
+	public ModelAndView farmPage(ModelAndView mav,
 			@RequestParam(required = false,defaultValue = "1") int currentPage,
 			@RequestParam(required = false,defaultValue = "default") String type, 
 			@RequestParam(required = false,defaultValue = "") String keyword,
@@ -478,7 +476,7 @@ public class AdminController {
 		map.put("recordCountPerPage", recordCountPerPage);
 		map.put("naviCountPerPage", naviCountPerPage);
 		map.put("site", "/admin/adminFarmPage");
-		page.paging(map);
+		page.pagingList(map);
 		aService.farmSearchList(map);
 		page.navi(map);
 		
@@ -541,7 +539,7 @@ public class AdminController {
 	
 	// member 페이지
 	@RequestMapping(value = "/admin/adminMemberPage.do", method = RequestMethod.GET)
-	public ModelAndView memberSearchList(ModelAndView mav,
+	public ModelAndView memberPage(ModelAndView mav,
 			@RequestParam(required = false,defaultValue = "1") int currentPage,
 			@RequestParam(required = false,defaultValue = "default") String type, 
 			@RequestParam(required = false,defaultValue = "") String keyword,
@@ -569,7 +567,7 @@ public class AdminController {
 		map.put("recordCountPerPage", recordCountPerPage);
 		map.put("naviCountPerPage", naviCountPerPage);
 		map.put("site", "/admin/adminMemberPage");
-		page.paging(map);
+		page.pagingList(map);
 		aService.memberSearchList(map);
 		page.navi(map);
 		
@@ -649,7 +647,7 @@ public class AdminController {
 		map.put("recordCountPerPage", recordCountPerPage);
 		map.put("naviCountPerPage", naviCountPerPage);
 		map.put("site", "/admin/adminBoardPage");
-		page.paging(map);
+		page.pagingList(map);
 		aService.adminBoard(map);
 		page.navi(map);
 		
@@ -672,7 +670,6 @@ public class AdminController {
 		map.put("promotionNo",promotionNo);
 		
 		boolean result = aService.promotionEndYNUpdate(map);
-		HashMap<String, Object> map2 = new HashMap<String, Object>();
 		
 		if(result) {
 			if(endYN.equals("Y")) mav.addObject("msg","게시판이 삭제되었습니다.");

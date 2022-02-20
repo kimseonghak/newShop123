@@ -7,7 +7,7 @@ import org.springframework.stereotype.Component;
 @Component(value = "page")
 public class BoardPaging {
 
-	public void paging(HashMap<String, Object> map) {
+	public void pagingList(HashMap<String, Object> map) {
 		int currentPage = (int)map.get("currentPage");
 		int recordCountPerPage = (int)map.get("recordCountPerPage");
 		int start = currentPage*recordCountPerPage-(recordCountPerPage-1);
